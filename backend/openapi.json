@@ -1,0 +1,545 @@
+{
+  "definitions": {
+    "Campaign": {
+      "properties": {
+        "active": { "type": "boolean" },
+        "id": { "type": "integer" },
+        "name": { "type": "string" }
+      },
+      "required": ["id", "name"],
+      "type": "object"
+    },
+    "CampaignCreateRequest": {
+      "properties": {
+        "active": { "type": "boolean" },
+        "name": { "type": "string" }
+      },
+      "required": ["name"],
+      "type": "object"
+    },
+    "CampaignListResponse": {
+      "properties": {
+        "campaigns": {
+          "items": { "$ref": "#/definitions/Campaign" },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "CampaignResponse": {
+      "properties": { "campaign": { "$ref": "#/definitions/Campaign" } },
+      "type": "object"
+    },
+    "CampaignUpdateRequest": {
+      "properties": {
+        "active": { "type": "boolean" },
+        "name": { "type": "string" }
+      },
+      "type": "object"
+    },
+    "Content": {
+      "properties": {
+        "button_link": { "type": "string", "x-nullable": true },
+        "button_text": { "type": "string", "x-nullable": true },
+        "campaign_id": { "type": "integer", "x-nullable": true },
+        "content_type": { "type": "string" },
+        "description": { "type": "string", "x-nullable": true },
+        "end_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "external_url": { "type": "string", "x-nullable": true },
+        "id": { "type": "integer" },
+        "image_filename": { "type": "string", "x-nullable": true },
+        "image_path": { "type": "string", "x-nullable": true },
+        "image_url": { "type": "string", "x-nullable": true },
+        "start_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "subtitle": { "type": "string", "x-nullable": true },
+        "title": { "type": "string" }
+      },
+      "required": ["content_type", "id", "title"],
+      "type": "object"
+    },
+    "ContentCreateRequest": {
+      "properties": {
+        "button_link": { "type": "string", "x-nullable": true },
+        "button_text": { "type": "string", "x-nullable": true },
+        "campaign_id": { "type": "integer" },
+        "content_type": { "type": "string" },
+        "description": { "type": "string", "x-nullable": true },
+        "end_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "external_url": { "type": "string", "x-nullable": true },
+        "order": { "type": "integer" },
+        "start_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "subtitle": { "type": "string", "x-nullable": true },
+        "title": { "type": "string" }
+      },
+      "required": ["content_type", "title"],
+      "type": "object"
+    },
+    "ContentListResponse": {
+      "properties": {
+        "contents": {
+          "items": { "$ref": "#/definitions/Content" },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ContentResponse": {
+      "properties": { "content": { "$ref": "#/definitions/Content" } },
+      "type": "object"
+    },
+    "ContentUpdateRequest": {
+      "properties": {
+        "button_link": { "type": "string", "x-nullable": true },
+        "button_text": { "type": "string", "x-nullable": true },
+        "campaign_id": { "type": "integer", "x-nullable": true },
+        "content_type": { "type": "string" },
+        "description": { "type": "string", "x-nullable": true },
+        "end_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "external_url": { "type": "string", "x-nullable": true },
+        "image_filename": { "type": "string", "x-nullable": true },
+        "image_path": { "type": "string", "x-nullable": true },
+        "image_url": { "type": "string", "x-nullable": true },
+        "order": { "type": "integer", "x-nullable": true },
+        "start_date": {
+          "format": "date-time",
+          "type": "string",
+          "x-nullable": true
+        },
+        "subtitle": { "type": "string", "x-nullable": true },
+        "title": { "type": "string", "x-nullable": true }
+      },
+      "type": "object"
+    },
+    "ErrorResponse": {
+      "properties": {
+        "error": { "type": "string", "x-nullable": true },
+        "message": { "type": "string" }
+      },
+      "required": ["message"],
+      "type": "object"
+    }
+  },
+  "info": { "title": "Spock API Docs", "version": "1.0" },
+  "paths": {
+    "/v1/campaign": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A list of campaigns",
+            "schema": { "$ref": "#/definitions/CampaignListResponse" }
+          },
+          "500": {
+            "description": "Error getting campaigns",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        },
+        "summary": "Get all Campaigns",
+        "tags": ["Campaign"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "description": "Campaign data",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/CampaignCreateRequest" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Campaign created successfully",
+            "schema": { "$ref": "#/definitions/CampaignResponse" }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": {
+            "description": "Error creating campaign",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        },
+        "summary": "Create Campaign",
+        "tags": ["Campaign"]
+      }
+    },
+    "/v1/campaign/{campaign_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "ID of the campaign to delete",
+            "in": "path",
+            "name": "campaign_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Campaign deleted successfully" },
+          "404": {
+            "description": "Campaign not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": { "description": "Error deleting campaign" }
+        },
+        "summary": "Delete Campaign",
+        "tags": ["Campaign"]
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "ID of the campaign to get",
+            "in": "path",
+            "name": "campaign_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign retrieved successfully",
+            "schema": { "$ref": "#/definitions/CampaignResponse" }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": { "description": "Error getting campaign" }
+        },
+        "summary": "Get Campaign",
+        "tags": ["Campaign"]
+      },
+      "put": {
+        "parameters": [
+          {
+            "description": "ID of the campaign to update",
+            "in": "path",
+            "name": "campaign_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "description": "Campaign data",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CampaignUpdateRequest",
+              "definitions": {
+                "Campaign": {
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "id": { "type": "integer" },
+                    "name": { "type": "string" }
+                  },
+                  "required": ["id", "name"],
+                  "type": "object"
+                },
+                "CampaignCreateRequest": {
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "name": { "type": "string" }
+                  },
+                  "required": ["name"],
+                  "type": "object"
+                },
+                "CampaignListResponse": {
+                  "properties": {
+                    "campaigns": {
+                      "items": { "$ref": "#/definitions/Campaign" },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "CampaignResponse": {
+                  "properties": {
+                    "campaign": { "$ref": "#/definitions/Campaign" }
+                  },
+                  "type": "object"
+                },
+                "CampaignUpdateRequest": {
+                  "properties": {
+                    "active": { "type": "boolean" },
+                    "name": { "type": "string" }
+                  },
+                  "type": "object"
+                },
+                "Content": {
+                  "properties": {
+                    "button_link": { "type": "string", "x-nullable": true },
+                    "button_text": { "type": "string", "x-nullable": true },
+                    "campaign_id": { "type": "integer", "x-nullable": true },
+                    "content_type": { "type": "string" },
+                    "description": { "type": "string", "x-nullable": true },
+                    "end_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "external_url": { "type": "string", "x-nullable": true },
+                    "id": { "type": "integer" },
+                    "image_filename": { "type": "string", "x-nullable": true },
+                    "image_path": { "type": "string", "x-nullable": true },
+                    "image_url": { "type": "string", "x-nullable": true },
+                    "start_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "subtitle": { "type": "string", "x-nullable": true },
+                    "title": { "type": "string" }
+                  },
+                  "required": ["content_type", "id", "title"],
+                  "type": "object"
+                },
+                "ContentCreateRequest": {
+                  "properties": {
+                    "button_link": { "type": "string", "x-nullable": true },
+                    "button_text": { "type": "string", "x-nullable": true },
+                    "campaign_id": { "type": "integer" },
+                    "content_type": { "type": "string" },
+                    "description": { "type": "string", "x-nullable": true },
+                    "end_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "external_url": { "type": "string", "x-nullable": true },
+                    "order": { "type": "integer" },
+                    "start_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "subtitle": { "type": "string", "x-nullable": true },
+                    "title": { "type": "string" }
+                  },
+                  "required": ["content_type", "title"],
+                  "type": "object"
+                },
+                "ContentListResponse": {
+                  "properties": {
+                    "contents": {
+                      "items": { "$ref": "#/definitions/Content" },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "ContentResponse": {
+                  "properties": {
+                    "content": { "$ref": "#/definitions/Content" }
+                  },
+                  "type": "object"
+                },
+                "ContentUpdateRequest": {
+                  "properties": {
+                    "button_link": { "type": "string", "x-nullable": true },
+                    "button_text": { "type": "string", "x-nullable": true },
+                    "campaign_id": { "type": "integer", "x-nullable": true },
+                    "content_type": { "type": "string" },
+                    "description": { "type": "string", "x-nullable": true },
+                    "end_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "external_url": { "type": "string", "x-nullable": true },
+                    "image_filename": { "type": "string", "x-nullable": true },
+                    "image_path": { "type": "string", "x-nullable": true },
+                    "image_url": { "type": "string", "x-nullable": true },
+                    "order": { "type": "integer", "x-nullable": true },
+                    "start_date": {
+                      "format": "date-time",
+                      "type": "string",
+                      "x-nullable": true
+                    },
+                    "subtitle": { "type": "string", "x-nullable": true },
+                    "title": { "type": "string", "x-nullable": true }
+                  },
+                  "type": "object"
+                },
+                "ErrorResponse": {
+                  "properties": {
+                    "error": { "type": "string", "x-nullable": true },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["message"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign updated successfully",
+            "schema": { "$ref": "#/definitions/CampaignResponse" }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": {
+            "description": "Error updating campaign",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        },
+        "summary": "Update Campaign",
+        "tags": ["Campaign"]
+      }
+    },
+    "/v1/content": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A list of contents",
+            "schema": { "$ref": "#/definitions/ContentListResponse" }
+          },
+          "500": { "description": "Error getting content" }
+        },
+        "summary": "Get all Contents",
+        "tags": ["Content"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "description": "Content data",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ContentCreateRequest" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Content created successfully",
+            "schema": { "$ref": "#/definitions/ContentResponse" }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": {
+            "description": "Error creating content",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        },
+        "summary": "Create Content",
+        "tags": ["Content"]
+      }
+    },
+    "/v1/content/{content_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "ID of the content to delete",
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Content deleted successfully" },
+          "404": {
+            "description": "Content not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": { "description": "Error deleting content" }
+        },
+        "summary": "Delete Content",
+        "tags": ["Content"]
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "ID of the content to get",
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Content retrieved successfully",
+            "schema": { "$ref": "#/definitions/ContentResponse" }
+          },
+          "404": {
+            "description": "Content not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": { "description": "Error getting content" }
+        },
+        "summary": "Get Content",
+        "tags": ["Content"]
+      },
+      "put": {
+        "parameters": [
+          {
+            "description": "ID of the content to update",
+            "in": "path",
+            "name": "content_id",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "description": "Content data",
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ContentUpdateRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Content updated successfully",
+            "schema": { "$ref": "#/definitions/ContentResponse" }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "404": {
+            "description": "Content not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          },
+          "500": {
+            "description": "Error updating content",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        },
+        "summary": "Update Content",
+        "tags": ["Content"]
+      }
+    }
+  },
+  "swagger": "2.0"
+}

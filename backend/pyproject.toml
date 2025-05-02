@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "*"
+psycopg2-binary = "*"
+python-dotenv = "^1.1.0"
+flask-sqlalchemy = "^3.1.1"
+pydantic = "^2.11.4"
+gunicorn = "^23.0.0"
+flasgger = "^0.9.7.1"
+apispec = "^6.8.1"
+apispec-webframeworks = "^1.2.0"
+marshmallow = "^4.0.0"
+marshmallow-sqlalchemy = "^1.4.2"
+flask-restful = "^0.3.10"
+webargs = "^8.7.0"
+flask-migrate = "^4.1.0"
+marshmallow-enum = "^1.5.1"
+enum34 = "^1.1.10"
+flask-cors = "^5.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

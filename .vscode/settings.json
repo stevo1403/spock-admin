@@ -1,0 +1,20 @@
+{
+    "IDX.aI.enableInlineCompletion": true,
+    "IDX.aI.enableCodebaseIndexing": true,
+    "workbench.editor.wrapTabs": true,
+    "cSpell.words": [
+        "jsonify"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "spock_db",
+            "database": "spock_db",
+            "username": "spock_admin",
+            "password": "spock_password"
+        }
+    ]
+}

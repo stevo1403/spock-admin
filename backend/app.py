@@ -863,6 +863,10 @@ def delete_campaign(campaign_id):
         if not campaign:
             return ErrorResponse().dump(dict(message=f"Campaign with the ID '{campaign_id}' not found", error="Campaign not found")), 404
 
+        content_list = db.session.query(Content).filter_by(campaign_id=campaign_id).all()
+        for content in content_list:
+            db.session.delete(content)
+
         # Use db.session directly to delete and commit the record
         db.session.delete(campaign)
         db.session.commit()

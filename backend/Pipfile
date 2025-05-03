@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+psycopg2-binary="*"
+python-dotenv="*"
+flask-sqlalchemy="*"
+pydantic="*"
+gunicorn="*"
+flasgger="*"
+apispec="*"
+apispec-webframeworks="*"
+marshmallow="*"
+marshmallow-sqlalchemy="*"
+flask-restful="*"
+webargs="*"
+flask-migrate="*"
+marshmallow-enum="*"
+enum34="*"
+flask-cors="*"
+uvicorn = "*"
+flask-swagger = "*"
+flask-swagger-ui = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

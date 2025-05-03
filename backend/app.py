@@ -1,17 +1,17 @@
-from typing import List
+import os
 import logging
+import secrets
 
-from flask import Flask, Blueprint, jsonify, request, send_from_directory
+from flask import Blueprint, jsonify, request, send_from_directory
 from flask import request
 from flask_cors import CORS
-from flasgger import Swagger, APISpec
-from webargs.flaskparser import use_args, parser
-from marshmallow import ValidationError
-import marshmallow.class_registry as _registry
+from flasgger import APISpec
+from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
+from webargs.flaskparser import use_args
 
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
-from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 
 from backend.db import get_session, load_db
@@ -72,12 +72,24 @@ template = spec.to_flasgger(
     ]
 )
 
-swagger = Swagger(
-    app,
-    template=template,
-    parse=True,
-    )
-swagger.config['defaultModelPropertiesSorted'] = False
+@app.route("/openapi.json")
+def api_spec():
+    return jsonify(swagger(app, template=template))
+
+SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+API_URL = '/openapi.json'  # Our API url (can of course be a local resource)
+
+# Call factory function to create our blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+    API_URL,
+    config={  # Swagger UI config overrides
+      'app_name': spec.title,
+    },
+  
+)
+
+app.register_blueprint(swaggerui_blueprint)
 
 Session = get_session()
 
@@ -113,7 +125,8 @@ def log_request_info():
 def log_response_info(response):
     print(f"🔵 Outgoing Response: {response.status}")
     print(f"Headers: {dict(response.headers)}")
-    print(f"Body: {response.get_data(as_text=True)}")
+    response.direct_passthrough = False
+    # print(f"Body: {response.get_data(as_text=True)}")
     return response
     
 # region Content APIs
@@ -453,6 +466,139 @@ def delete_content(content_id):
         get_traceback(e)
         logger.error(f"Error deleting content: {e}")
         return ErrorResponse().dump(dict(message="Error deleting content", error=str(e))), 500
+
+@api_v1.route('/content/<content_id>/image', methods=['POST'])
+def upload_content_image(content_id):
+    """
+    Upload an image for a content
+    ---
+    consumes:
+      - multipart/form-data
+    tags:
+      - Content
+    parameters:
+      - in: path
+        name: content_id
+        schema:
+          type: integer
+        required: true
+        description: ID of the content
+      - name: file
+        in: formData
+        type: file
+        required: true
+        description: Image file to upload
+    responses:
+      200:
+        description: Image uploaded successfully
+        schema:
+          $ref: '#/definitions/ContentResponse'
+    """
+    try:
+      
+        content = db.session.query(Content).get(content_id)
+        if not content:
+            return ErrorResponse().dump(dict(message=f"Content with ID '{content_id}' not found", error="Content not found")), 404
+
+        if 'file' not in request.files:
+            return ErrorResponse().dump(dict(message="No image file provided", error="Missing file")), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return ErrorResponse().dump(dict(message="No selected file", error="Missing filename")), 400
+
+        if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            return ErrorResponse().dump(dict(message="Invalid file type. Only PNG, JPG, JPEG and GIF allowed", error="Invalid file type")), 400
+
+        filename = secure_filename(file.filename)
+        # Generate unique filename to prevent overwrites
+        unique_filename = f"{secrets.token_hex(8)}_{filename}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        file.save(file_path)
+
+        # Store relative path and generate URL
+        relative_path = os.path.join('uploads', unique_filename)
+        image_url = f"/v1/images/{unique_filename}"
+
+        content.image_filename = unique_filename
+        content.image_path = relative_path
+        content.image_url = image_url
+        
+        db.session.commit()
+        db.session.refresh(content)
+
+        content_schema = ContentSchema.from_orm(content)
+        return ContentResponse().dump(dict(content=content_schema)), 200
+
+    except Exception as e:
+        db.session.rollback()
+        get_traceback(e)
+        logger.error(f"Error uploading image: {e}")
+        return ErrorResponse().dump(dict(message="Error uploading image", error=str(e))), 500
+
+@api_v1.route('/content/<content_id>/image', methods=['GET'])
+def get_content_image(content_id):
+  """
+  Get the image associated with a content
+  ---
+  tags:
+    - Content
+  parameters:
+    - in: path
+      name: content_id
+      schema:
+        type: integer
+      required: true
+      description: ID of the content
+  responses:
+    200:
+      description: Image file
+    404:
+      description: Content or image not found
+      schema:
+        $ref: '#/definitions/ErrorResponse'
+    500:
+      description: Error retrieving image
+  """
+  try:
+    content = db.session.query(Content).get(content_id)
+    if not content:
+      return ErrorResponse().dump(dict(message=f"Content with ID '{content_id}' not found", error="Content not found")), 404
+      
+    if not content.image_path:
+      return ErrorResponse().dump(dict(message="No image associated with this content", error="Image not found")), 404
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], secure_filename(content.image_filename))
+
+  except Exception as e:
+    get_traceback(e)
+    logger.error(f"Error retrieving image: {e}")
+    return ErrorResponse().dump(dict(message="Error retrieving image", error=str(e))), 500
+
+
+@api_v1.route('/images/<filename>')
+def serve_image(filename):
+    """
+    Serve uploaded images    
+    ---
+    tags:
+      - Content
+    parameters:
+      - in: path
+        name: filename
+        schema:
+          type: string
+        required: true
+        description: Name of the image file to serve
+    responses:
+      200:
+        description: Image file
+      404:
+        description: Image not found
+        schema:
+          $ref: '#/definitions/ErrorResponse'
+    """
+    return send_from_directory(app.config['UPLOAD_FOLDER'], secure_filename(filename))
 
 # region Campaign APIs
 @api_v1.route('/campaign', methods=['POST'])

@@ -3,7 +3,8 @@ import os
 from backend.db import get_db_uri
 
 # App variables
-UPLOAD_FOLDER = 'uploads'
+## Configure upload folder
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 APP = None
 

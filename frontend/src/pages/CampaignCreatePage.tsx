@@ -2,11 +2,18 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, Link } from "@tanstack/react-router"; // Import Link
-import { CampaignCreateRequest, Campaign, ErrorResponse, API_BASE_URL } from "../types/api";
+import {
+  CampaignCreateRequest,
+  Campaign,
+  ErrorResponse,
+  API_BASE_URL,
+} from "../types/api";
 
 // --- API Mutation Function ---
 
-const createCampaign = async (data: CampaignCreateRequest): Promise<Campaign> => {
+const createCampaign = async (
+  data: CampaignCreateRequest
+): Promise<Campaign> => {
   const response = await fetch(`${API_BASE_URL}/v1/campaign`, {
     method: "POST",
     headers: {
@@ -16,9 +23,13 @@ const createCampaign = async (data: CampaignCreateRequest): Promise<Campaign> =>
   });
 
   if (!response.ok) {
-    const errorData: ErrorResponse = await response.json().catch(() => ({ message: "Unknown error during creation" }));
+    const errorData: ErrorResponse = await response
+      .json()
+      .catch(() => ({ message: "Unknown error during creation" }));
     // Enhance error message with status if possible
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`
+    );
   }
 
   // Assuming the backend returns the created campaign object in CampaignResponse format
@@ -38,7 +49,12 @@ const CampaignCreatePage: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: "/campaigns/new" }); // Hook for navigation
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormInputs>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormInputs>({
     defaultValues: {
       name: "",
       active: true, // Default new campaigns to active
@@ -73,67 +89,73 @@ const CampaignCreatePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <h1 className="text-2xl font-bold text-gray-700 mb-6">Create New Campaign</h1>
+    <div className="theme-glass-container max-w-xl mx-auto p-8 space-y-8">
+      <h1 className="text-2xl font-bold text-white/90 mb-6">
+        Create New Campaign
+      </h1>
 
-      {/* Display general mutation errors */}
       {createMutation.isError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <div
+          className="bg-red-500/20 border border-red-500/50 text-white/90 px-4 py-3 rounded-lg relative mb-4"
+          role="alert"
+        >
           <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{createMutation.error?.message || "Failed to create campaign."}</span>
+          <span className="block sm:inline">
+            {createMutation.error?.message}
+          </span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Campaign Name Field */}
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
-            Campaign Name <span className="text-red-500">*</span>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex items-center gap-4">
+          <label className="w-1/3 text-white/90 text-sm font-bold text-left">
+            Campaign Name <span className="text-pink-400">*</span>
           </label>
-          <input
-            id="name"
-            type="text"
-            {...register("name", { required: "Campaign name is required" })}
-            className={`shadow appearance-none border ${errors.name ? 'border-red-500' : 'border-gray-200'} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-            disabled={isSubmitting || createMutation.isPending} // Changed isLoading to isPending
-          />
-          {errors.name && <p className="text-red-500 text-xs italic mt-1">{errors.name.message}</p>}
+          <div className="w-2/3">
+            <input
+              {...register("name", { required: "Campaign name is required" })}
+              className="theme-glass-input w-full"
+            />
+            {errors.name && (
+              <p className="theme-text-error text-xs mt-1">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Active Status Field */}
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+        <div className="flex items-center gap-4">
+          <label className="w-1/3 text-white/90 text-sm font-bold text-left">
             Status
           </label>
-          <div className="mt-2">
-            <label htmlFor="active" className="inline-flex items-center">
+          <div className="flex items-center gap-2">
+            <label className="inline-flex items-center hover:cursor-pointer">
               <input
-                id="active"
                 type="checkbox"
                 {...register("active")}
-                className="rounded h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 shadow-sm"
-                disabled={isSubmitting || createMutation.isPending} // Changed isLoading to isPending
+                className="rounded h-5 w-5 text-purple-500 focus:ring-purple-500/50 border-white/20 bg-white/10"
               />
-              <span className="ml-2 text-sm text-gray-700">Active</span>
+              <span className="ml-2 text-white/90">Active</span>
             </label>
           </div>
         </div>
 
-        {/* Submit Button */}
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 transition duration-150 ease-in-out"
-            disabled={isSubmitting || createMutation.isPending} // Changed isLoading to isPending
-          >
-            {isSubmitting || createMutation.isPending ? "Creating..." : "Create Campaign"} {/* Changed isLoading to isPending */}
-          </button>
+        <div className="flex items-center justify-end gap-4 pt-4">
           <Link
             to="/"
-            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+            className="text-white/80 hover:text-white font-medium text-sm hover:underline transition-colors duration-200"
           >
             Cancel
           </Link>
+          <button
+            type="submit"
+            className="theme-glass-button min-w-[120px]"
+            disabled={isSubmitting || createMutation.isPending}
+          >
+            {isSubmitting || createMutation.isPending
+              ? "Creating..."
+              : "Create Campaign"}
+          </button>
         </div>
       </form>
     </div>

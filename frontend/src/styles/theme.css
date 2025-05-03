@@ -1,0 +1,83 @@
+.theme-gradient-bg {
+  @apply min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800;
+}
+
+.theme-glass-container {
+  @apply backdrop-blur-xl bg-white/10 shadow-2xl rounded-2xl border border-white/20;
+}
+
+.theme-glass-input {
+  @apply bg-white/10 border border-white/20 rounded-lg w-full py-2 px-3 text-white placeholder-white/50 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all duration-200;
+}
+
+.theme-glass-button {
+  @apply bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-200 disabled:opacity-50;
+}
+
+.theme-glass-table {
+  @apply min-w-full divide-y divide-white/20;
+}
+
+.theme-glass-table th {
+    @apply px-5 py-3 text-left text-xs font-semibold text-black bg-white/5 uppercase tracking-wider;
+}
+
+.theme-glass-table td {
+    @apply px-5 py-4 text-sm text-black border-b border-white/10;
+}
+
+.theme-glass-table tr:hover {
+  @apply bg-white/5;
+}
+
+.theme-text {
+  @apply text-white/90;
+}
+
+.theme-text-error {
+  @apply text-pink-400;
+}
+
+@keyframes toastFadeIn {
+    0% { 
+        opacity: 0;
+        transform: translateY(-2rem) scale(0.9);
+        filter: blur(8px);
+    }
+    40% { 
+        opacity: 0.7;
+        transform: translateY(-0.5rem) scale(1.03);
+        filter: blur(2px);
+    }
+    80% { 
+        transform: translateY(0.2rem);
+        filter: blur(0);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+  }
+  
+  .animate-toast {
+    animation: toastFadeIn 0.5s cubic-bezier(0.15, 1.15, 0.4, 1.2) forwards;
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
+  
+  @keyframes toastShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  
+  .animate-toast-shimmer {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.3) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: toastShimmer 2s ease-in-out infinite;
+  }

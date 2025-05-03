@@ -11,6 +11,7 @@ export interface Campaign {
   id: number;
   name: string;
   active?: boolean; // Optional based on schema
+  content?: Content[]; // Optional based on schema
 }
 
 // From #/definitions/CampaignListResponse
@@ -43,6 +44,7 @@ export interface Content {
   start_date?: string | null; // Assuming ISO date string
   end_date?: string | null; // Assuming ISO date string
   external_url?: string | null;
+  order?: number | null; // Optional based on schema
   image_filename?: string | null;
   image_path?: string | null;
   image_url?: string | null;

@@ -64,21 +64,21 @@ const CampaignListPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className="theme-glass-container p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-700">Campaign Management</h1>
+        <h1 className="text-2xl font-bold text-white/90">Campaign Management</h1>
         <Link
           to="/campaigns/new"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+          className="theme-glass-button"
         >
           Create New Campaign
         </Link>
       </div>
 
       {/* Loading and Error States */}
-      {isLoading && <p className="text-gray-600">Loading campaigns...</p>}
-      {isFetching && !isLoading && <p className="text-gray-500 text-sm italic">Updating list...</p>}
-      {error && <p className="text-red-500">Error fetching campaigns: {error.message}</p>}
+      {isLoading && <p className="theme-text">Loading campaigns...</p>}
+      {isFetching && !isLoading && <p className="text-white/60 text-sm italic">Updating list...</p>}
+      {error && <p className="theme-text-error">Error fetching campaigns: {error.message}</p>}
       {deleteMutation.isError && (
          <p className="text-red-500 mb-4">Error deleting campaign: {deleteMutation.error.message}</p>
       )}
@@ -86,13 +86,13 @@ const CampaignListPage: React.FC = () => {
       {/* Campaign Table */}
       {!isLoading && !error && (
         <div className="overflow-x-auto mt-6">
-          <table className="min-w-full leading-normal">
+          <table className="theme-glass-table">
             <thead>
               <tr className="bg-gray-100">
-                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">ID</th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">ID</th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">Name</th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">Status</th>
+                <th className="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-900 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +100,7 @@ const CampaignListPage: React.FC = () => {
                 campaigns.map((campaign) => (
                   <tr key={campaign.id} className="hover:bg-gray-50">
                     <td className="px-5 py-4 border-b border-gray-200 bg-white text-black text-sm">{campaign.id}</td>
-                    <td className="px-5 py-4 border-b border-gray-200 bg-white text-black text-sm">{campaign.name}</td>
+                    <td className="px-5 py-4 border-b border-gray-200 bg-white text-black text-sm text-left">{campaign.name}</td>
                     <td className="px-5 py-4 border-b border-gray-200 bg-white text-black text-sm">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${

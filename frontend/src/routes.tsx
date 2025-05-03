@@ -10,7 +10,7 @@ import App from "./App";
 import CampaignListPage from "./pages/CampaignListPage";
 import CampaignDetailPage from "./pages/CampaignDetailPage";
 import CampaignCreatePage from "./pages/CampaignCreatePage";
-import ContentFormPage from "./pages/ContentFormPage";
+import ContentFormPage, { ContentCreatePage, ContentEditPage } from "./pages/ContentFormPage";
 import { 
   Campaign,
   ErrorResponse,
@@ -18,7 +18,6 @@ import {
   ContentListResponse,
   API_BASE_URL,
 } from "./types/api";
-import React from "react";
 
 // --- API Fetching Functions ---
 
@@ -34,6 +33,27 @@ const fetchCampaignById = async (campaignId: number): Promise<Campaign> => {
   }
   const data: { campaign: Campaign } = await response.json();
   return data.campaign;
+};
+
+// Add new fetch functions
+const fetchActiveCampaign = async (): Promise<Campaign> => {
+  const response = await fetch(`${API_BASE_URL}/v1/campaigns/active`);
+  if (!response.ok) {
+    const errorData: ErrorResponse = await response.json().catch(() => ({ message: "Unknown error fetching active campaign" }));
+    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+  }
+  const data: { campaign: Campaign } = await response.json();
+  return data.campaign;
+};
+
+const fetchCampaignContent = async (campaignId: number): Promise<Content[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/campaign/${campaignId}/content`);
+  if (!response.ok) {
+    const errorData: ErrorResponse = await response.json().catch(() => ({ message: "Unknown error fetching campaign content" }));
+    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+  }
+  const data: ContentListResponse = await response.json();
+  return data.contents || [];
 };
 
 // Fetches all content
@@ -80,6 +100,16 @@ const contentQueryOptions = (contentId: number) => queryOptions({
     queryFn: () => fetchContentById(contentId),
 });
 
+// Add new query options
+const activeCampaignQueryOptions = queryOptions({
+  queryKey: ['campaign', 'active'],
+  queryFn: fetchActiveCampaign,
+});
+
+const campaignContentQueryOptions = (campaignId: number) => queryOptions({
+  queryKey: ['campaign', campaignId, 'content'],
+  queryFn: () => fetchCampaignContent(campaignId),
+});
 
 // Reusable QueryClient instance
 const queryClient = new QueryClient();
@@ -117,13 +147,13 @@ const campaignDetailBaseRoute = createRoute({
     if (isNaN(campaignId)) {
         throw new Error("Invalid campaign ID provided");
     }
-    const campaign = await queryClient.ensureQueryData(campaignQueryOptions(campaignId));
-    // Ensure all content is loaded or fetched
-    const allContent = await queryClient.ensureQueryData(allContentQueryOptions);
-    // Loader data includes the fetched campaign and all content
+    const [campaign, campaignContent] = await Promise.all([
+      queryClient.ensureQueryData(campaignQueryOptions(campaignId)),
+      queryClient.ensureQueryData(campaignContentQueryOptions(campaignId))
+    ]);
     return {
       campaign,
-      allContent
+      content: campaignContent // Keep the same property name for compatibility
     };
   },
   errorComponent: ({ error }) => {
@@ -143,16 +173,14 @@ const campaignDetailIndexRoute = createRoute({
 const contentCreateRoute = createRoute({
   getParentRoute: () => campaignDetailBaseRoute, 
   path: "content/new", // Relative path
-  parseParams: (params) => ({
-    // campaignId is inherited from parent
-  }),
+  parseParams: () => ({}), // No additional parameters
   loader: ({ params: { campaignId } }) => {
     if (isNaN(campaignId)) {
       throw new Error("Invalid campaign ID provided in content creation route");
     }
     return { campaignId }; // Pass the campaignId from query params
   },
-  component: ContentFormPage,
+  component: ContentCreatePage, // Use the create-specific component
 });
 
 // Route for editing content
@@ -197,7 +225,7 @@ const contentEditRoute = createRoute({
       const message = error instanceof Error ? error.message : "An unknown error occurred";
       return <div className="text-red-600 p-4">Error loading content: {message}</div>;
   },
-  component: ContentFormPage,
+  component: ContentEditPage, // Use the edit-specific component
 });
 
 // Index route for content details page - Use a placeholder component for now

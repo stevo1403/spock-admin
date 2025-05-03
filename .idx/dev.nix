@@ -6,26 +6,26 @@
   # Use https://search.nixos.org/packages to find packages
   packages = [
     # pkgs.python3
-    pkgs.go
-    pkgs.sudo
+    # pkgs.go
+    # pkgs.sudo
     pkgs.python311
     pkgs.python3
     pkgs.python311Packages.pip
-    pkgs.nodejs_20
+    # pkgs.nodejs_20
     pkgs.nodePackages.nodemon
     pkgs.python311Packages.flask
     pkgs.python311Packages.flask-api
-    pkgs.python311Packages.flask-admin
+    # pkgs.python311Packages.flask-admin
     pkgs.python311Packages.gunicorn
     pkgs.python311Packages.requests
     pkgs.python311Packages.sqlalchemy
     pkgs.python311Packages.psycopg2
-    pkgs.python311Packages.flask_sqlalchemy
+    # pkgs.python311Packages.flask_sqlalchemy
     pkgs.python311Packages.flask_migrate
-    pkgs.python311Packages.flask_wtf
-    pkgs.python311Packages.flask_login
+    # pkgs.python311Packages.flask_wtf
+    # pkgs.python311Packages.flask_login
     pkgs.postgresql
-    pkgs.nodejs
+    # pkgs.nodejs
     pkgs.yarn
     pkgs.tailwindcss
   ];
@@ -59,8 +59,8 @@
           "backend/.env"
           "backend/main.py"
         ];
-        run-frontend = "cd frontend && yarn run dev";
-        run-backend = "cd backend && poetry run gunicorn app:app --bind localhost:8000 --reload";
+        # run-frontend = "cd frontend && yarn run dev";
+        run-backend = "cd backend && source ../.venv/bin/activate && poetry run gunicorn app:app --bind localhost:8000 --reload";
       };
     };
   };

@@ -1,5 +1,4 @@
 import React from "react";
-import { useEffect } from "react";
 import { useLoaderData, useParams, Link } from "@tanstack/react-router"; // Removed useNavigate
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -11,8 +10,6 @@ import {
   API_BASE_URL,
 } from "../types/api";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
-
-import { ToastProvider, useToast } from "../components/ToastProvider";
 
 import "../styles/theme.css"; // Ensure this path is correct
 // --- API Functions ---
@@ -96,7 +93,6 @@ const ContentThumbnail: React.FC<{ content: Content }> = ({ content }) => {
 
 const CampaignDetailPage: React.FC = () => {
   const { campaignId } = useParams({ from: "/campaigns/$campaignId" });
-  const { showToast } = useToast();
   const id = Number(campaignId);
 
   // Use the loader data instead of a separate query

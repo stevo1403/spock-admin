@@ -10,7 +10,7 @@ import App from "./App";
 import CampaignListPage from "./pages/CampaignListPage";
 import CampaignDetailPage from "./pages/CampaignDetailPage";
 import CampaignCreatePage from "./pages/CampaignCreatePage";
-import ContentFormPage, { ContentCreatePage, ContentEditPage } from "./pages/ContentFormPage";
+import { ContentCreatePage, ContentEditPage } from "./pages/ContentFormPage";
 import { 
   Campaign,
   ErrorResponse,
@@ -36,15 +36,15 @@ const fetchCampaignById = async (campaignId: number): Promise<Campaign> => {
 };
 
 // Add new fetch functions
-const fetchActiveCampaign = async (): Promise<Campaign> => {
-  const response = await fetch(`${API_BASE_URL}/v1/campaigns/active`);
-  if (!response.ok) {
-    const errorData: ErrorResponse = await response.json().catch(() => ({ message: "Unknown error fetching active campaign" }));
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-  }
-  const data: { campaign: Campaign } = await response.json();
-  return data.campaign;
-};
+// const fetchActiveCampaign = async (): Promise<Campaign> => {
+//   const response = await fetch(`${API_BASE_URL}/v1/campaigns/active`);
+//   if (!response.ok) {
+//     const errorData: ErrorResponse = await response.json().catch(() => ({ message: "Unknown error fetching active campaign" }));
+//     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+//   }
+//   const data: { campaign: Campaign } = await response.json();
+//   return data.campaign;
+// };
 
 const fetchCampaignContent = async (campaignId: number): Promise<Content[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/campaign/${campaignId}/content`);
@@ -101,10 +101,10 @@ const contentQueryOptions = (contentId: number) => queryOptions({
 });
 
 // Add new query options
-const activeCampaignQueryOptions = queryOptions({
-  queryKey: ['campaign', 'active'],
-  queryFn: fetchActiveCampaign,
-});
+// const activeCampaignQueryOptions = queryOptions({
+//   queryKey: ['campaign', 'active'],
+//   queryFn: fetchActiveCampaign,
+// });
 
 const campaignContentQueryOptions = (campaignId: number) => queryOptions({
   queryKey: ['campaign', campaignId, 'content'],

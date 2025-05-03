@@ -351,8 +351,6 @@ const ContentCreatePage: React.FC = () => {
   const { campaignId: campaignIdStr } = params || {};
   const campaignId = Number(campaignIdStr);
   
-  const loaderData = useLoaderData({ from: "/campaigns/$campaignId/content/new" }) as { campaignId?: number } | undefined;
-  
   if (isNaN(campaignId)) {
     return <div className="text-red-600 p-4">Error: Invalid campaign ID</div>;
   }
@@ -400,7 +398,6 @@ export { ContentCreatePage, ContentEditPage };
 
 const ContentFormPage: React.FC = () => {
   const editParams = useParams({ from: "/campaigns/$campaignId/content/$contentId/edit" });
-  const createParams = useParams({ from: "/campaigns/$campaignId/content/new" });
   
   if (editParams?.contentId) {
     return <ContentEditPage />;

@@ -24,6 +24,8 @@ flask-migrate = "^4.1.0"
 marshmallow-enum = "^1.5.1"
 enum34 = "^1.1.10"
 flask-cors = "^5.0.1"
+flask-swagger = "^0.2.14"
+flask-swagger-ui = "^4.11.1"
 
 
 [build-system]

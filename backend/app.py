@@ -1,8 +1,9 @@
+# Suggested code may be subject to a license. Learn more: ~LicenseLog:3019753449.
 import os
 import logging
 import secrets
 
-from flask import Blueprint, jsonify, request, send_from_directory
+from flask import Blueprint, jsonify, request, send_from_directory, redirect
 from flask import request
 from flask_cors import CORS
 from flasgger import APISpec
@@ -17,6 +18,7 @@ from werkzeug.utils import secure_filename
 from backend.db import get_session, load_db
 
 from backend.helpers import create_flask_app, get_traceback
+from backend.conn import SPOCK_FRONTEND, SPOCK_BACKEND
 
 app = create_flask_app()
 db = load_db()
@@ -954,8 +956,9 @@ def get_active_campaign():
         return ErrorResponse().dump(dict(message="Error getting active campaign", error=str(e))), 500
 
 @api_v1.route('/')
+@app.route('/')
 def hello():
-    return "Welcome to Spock Admin!!"
+    return redirect(SPOCK_FRONTEND, code=301)
 
 app.register_blueprint(api_v1)
 

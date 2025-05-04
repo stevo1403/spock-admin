@@ -115,19 +115,19 @@ def internal_server_error(e):
     }
     return jsonify(response), 500
 
-@app.before_request
-def log_request_info():
-    print(f"\n🟢 Incoming Request: {request.method} {request.url}")
-    print(f"Headers: {dict(request.headers)}")
-    print(f"Body: {request.get_data(as_text=True)}")
+# @app.before_request
+# def log_request_info():
+#     print(f"\n🟢 Incoming Request: {request.method} {request.url}")
+#     print(f"Headers: {dict(request.headers)}")
+#     print(f"Body: {request.get_data(as_text=True)}")
 
-@app.after_request
-def log_response_info(response):
-    print(f"🔵 Outgoing Response: {response.status}")
-    print(f"Headers: {dict(response.headers)}")
-    response.direct_passthrough = False
-    # print(f"Body: {response.get_data(as_text=True)}")
-    return response
+# @app.after_request
+# def log_response_info(response):
+#     print(f"🔵 Outgoing Response: {response.status}")
+#     print(f"Headers: {dict(response.headers)}")
+#     response.direct_passthrough = False
+#     # print(f"Body: {response.get_data(as_text=True)}")
+#     return response
     
 # region Content APIs
 

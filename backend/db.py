@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError 
 
-from backend.conn import get_db_uri
+from conn import get_db_uri
 
 DATABASE_URL = get_db_uri()
 

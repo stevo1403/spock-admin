@@ -1,6 +1,6 @@
 import os
 
-from backend.db import get_db_uri
+from db import get_db_uri
 
 # App variables
 ## Configure upload folder

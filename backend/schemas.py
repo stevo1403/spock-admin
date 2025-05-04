@@ -6,7 +6,7 @@ from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow.decorators import post_load
 
-from backend.models import ContentType, Content, Campaign
+from models import ContentType, Content, Campaign
 
 # region Base Schemas
 

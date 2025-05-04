@@ -14,17 +14,17 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 from werkzeug.utils import secure_filename
 
-from backend.db import get_session, load_db
+from db import get_session, load_db
 
-from backend.helpers import create_flask_app, get_traceback
+from helpers import create_flask_app, get_traceback
 
 app = create_flask_app()
 db = load_db()
 
 CORS(app)
 
-from backend.models import Content, Campaign
-from backend.schemas import (
+from models import Content, Campaign
+from schemas import (
     ContentSchema,
     ContentCreateRequest,
     ContentUpdateRequest,

@@ -21,9 +21,9 @@ flask-migrate="*"
 marshmallow-enum="*"
 enum34="*"
 flask-cors="*"
-uvicorn = "*"
 flask-swagger = "*"
 flask-swagger-ui = "*"
+uvicorn = "*"
 
 [dev-packages]
 

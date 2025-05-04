@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Enum, t
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from backend.db import db
+from db import db
 
 class CustomBaseModel():
     created_at = Column(DateTime, server_default=text('now()'))

@@ -3,11 +3,11 @@ import traceback
 
 from flask import Flask
 
-import backend.config
-from backend.config import ALLOWED_EXTENSIONS
-from backend.config import configure_upload
-from backend.conn import get_db_uri
-from backend.db import run_migrations, load_db
+import config
+from config import ALLOWED_EXTENSIONS
+from config import configure_upload
+from conn import get_db_uri
+from db import run_migrations, load_db
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ def create_flask_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = get_db_uri()
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    backend.config.APP = app
+    config.APP = app
 
     db = load_db()
 
